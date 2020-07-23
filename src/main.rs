@@ -3,12 +3,10 @@
 #![no_main]
 
 use cortex_m_rt::entry; // The runtime
-use embedded_hal::digital::v2::OutputPin; /* the `set_high` and
-                                            * `set_low` function */
+use embedded_hal::digital::v2::OutputPin; // the `set_high` and `set_low` function
 #[allow(unused_imports)]
-use panic_halt;
-use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions // When a panic occurs, simply stop the
-                                                    // microcontroller
+use panic_halt; // When a panic occurs, simply stop the microcontroller
+use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions
 
 // This marks the entrypoint of our application. The cortex_m_rt creates some
 // startup code before this, but we don't need to worry about this
