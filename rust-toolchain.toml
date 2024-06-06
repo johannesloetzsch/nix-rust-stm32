@@ -1,0 +1,5 @@
+# rust-toolchain.toml
+[toolchain]
+channel = "stable"
+components = [ "rust-src", "llvm-tools-preview" ]
+targets = [ "thumbv7m-none-eabi" ]
