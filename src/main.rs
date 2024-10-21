@@ -6,11 +6,25 @@ use cortex_m_rt::entry; // The runtime
 use embedded_hal::digital::v2::OutputPin; // the `set_high` and `set_low` function
 #[allow(unused_imports)]
 use panic_halt; // When a panic occurs, simply stop the microcontroller
-use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions
+use stm32f1xx_hal::{delay::Delay, gpio::{gpioc::PC13, Output, PushPull}, pac, prelude::*}; // STM32F1 specific functions
+
+
+#[no_mangle]
+fn main_loop(mut led: PC13<Output<PushPull>>, mut delay: Delay) -> ! {
+    loop {
+        led.set_high().ok();
+        delay.delay_ms(1000_u16);
+
+        led.set_low().ok();
+        delay.delay_ms(1000_u16);
+    }
+}
+
 
 // This marks the entrypoint of our application. The cortex_m_rt creates some
 // startup code before this, but we don't need to worry about this
 #[entry]
+
 fn main() -> ! {
     // get handles to the hardware objects. These functions can only be called
     // once, so that the borrowchecker can ensure you don't reconfigure
@@ -29,7 +43,7 @@ fn main() -> ! {
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
     // should be connected to the Bluepills onboard LED (on most boards, but don't rely on it…).
-    let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+    let led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
     // Now we need a delay object. The delay is of course depending on the clock
     // frequency of the microcontroller, so we need to fix the frequency
@@ -44,14 +58,7 @@ fn main() -> ! {
     // wait. The function also consumes the System Timer peripheral, so that no
     // other function can access it. Otherwise the timer could be reset during a
     // delay.
-    let mut delay = Delay::new(cp.SYST, clocks);
+    let delay = Delay::new(cp.SYST, clocks);
 
-
-    // Now, enjoy the lightshow!
-    loop {
-        led.set_high().ok();
-        delay.delay_ms(1_000_u16);
-        led.set_low().ok();
-        delay.delay_ms(1_000_u16);
-    }
+    main_loop(led, delay)
 }

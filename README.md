@@ -24,6 +24,13 @@ It turns out some Blue pill boards have gpioc.pc13 not connected to the onboard 
 In that case you might want connect an external LED…
 
 
+## Enjoy the [Asm](https://developer.arm.com/documentation/dui0489/i/arm-and-thumb-instructions/arm-and-thumb-instruction-summary?lang=en)
+```sh
+cargo rustc -- --emit asm
+grep -m1 main_loop: -A43 target/thumbv7m-none-eabi/debug/deps/blinky_rust-*.s | bat --file-name example.s
+cargo objdump -- -S target/thumbv7m-none-eabi/debug/deps/blinky_rust-1246b2f482d8d8c6 | grep -m1 '<main_loop>' -A 26
+```
+
 ## Based on work of
 
 Original: https://gitlab.com/jounathaen-projects/embedded-rust/blinky-rust
