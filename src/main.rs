@@ -28,7 +28,7 @@ fn main() -> ! {
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
-    // is connected to the Bluepills onboard LED.
+    // should be connected to the Bluepills onboard LED (on most boards, but don't rely on it…).
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
 
     // Now we need a delay object. The delay is of course depending on the clock
