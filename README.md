@@ -3,8 +3,8 @@
 ## Programm via UART1 (using external USB-UART)
 
 ### Pins
-> UART1 TxD: `PA9`  
-> UART1 RxD: `PA10`
+> UART1 RxD: `PA9` (TxD)
+> UART1 TxD: `PA10` (RxD)
 
 ### Boot pins (Jumper)
 To enter `System memory` boot mode:
