@@ -1,6 +1,6 @@
 ## Pinout bluepill (variant @c3d2)
 
-> USB
+> USB (power supply)
 
 | Gnd         | Gnd                 |
 |             |                     |
@@ -19,5 +19,14 @@
 |             |                     |
 |             |                     |
 |             |                     |
+
+> | 3V3 | DIO | CLK | Gnd |
+
+
+## Black magic probe
+
+* power will be provided via Black magic probe instead of USB
+
+simply connect:
 
 > | 3V3 | DIO | CLK | Gnd |

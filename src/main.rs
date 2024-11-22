@@ -7,6 +7,30 @@ use embedded_hal::digital::v2::OutputPin; // the `set_high` and `set_low` functi
 #[allow(unused_imports)]
 use panic_halt; // When a panic occurs, simply stop the microcontroller
 use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions
+use stm32f1xx_hal::gpio::{Output, PushPull, gpioc::PC13};
+
+
+pub const DELAY_MS: u16 = 100;
+/** To change it in gdb:
+    disassemble blinky_rust::__cortex_m_rt_main
+    break *0x08000242
+    continue
+    info registers
+    step
+    info registers
+    set $r1=5000
+    continue
+**/
+
+
+fn led_on(led: &mut PC13<Output<PushPull>>) {
+    let _ = led.set_high();
+}
+
+fn led_off(led: &mut PC13<Output<PushPull>>) {
+    let _ = led.set_low();
+}
+
 
 // This marks the entrypoint of our application. The cortex_m_rt creates some
 // startup code before this, but we don't need to worry about this
@@ -49,9 +73,9 @@ fn main() -> ! {
 
     // Now, enjoy the lightshow!
     loop {
-        led.set_high().ok();
-        delay.delay_ms(1_000_u16);
-        led.set_low().ok();
-        delay.delay_ms(1_000_u16);
+        delay.delay_ms(DELAY_MS);
+        led_on(&mut led);
+        delay.delay_ms(DELAY_MS);
+        led_off(&mut led);
     }
 }
