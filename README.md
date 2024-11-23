@@ -5,7 +5,7 @@
 ### Pins
 [pinout for bluepills@c3d2](./pinout.md)
 
-> UART1 RxD: `PA9` (TxD)
+> UART1 RxD: `PA9` (TxD)  
 > UART1 TxD: `PA10` (RxD)
 
 ### Boot pins (Jumper)
@@ -55,6 +55,19 @@ Attaching to Remote target
 ```
 
 > [use gdb](https://black-magic.org/usage/gdb-commands.html)
+
+
+#### Create Black Magic Probe
+```sh
+git clone git@github.com:mmoskal/blackmagic-bluepill.git
+stm32flash -S 0x8000000 -v -w blackmagic-bluepill/dist/blackmagic_all.bin /dev/ttyUSB0
+lsusb | grep 'Black Magic Debug Probe'
+```
+> This version has another [pinout](https://github.com/mmoskal/blackmagic-bluepill?tab=readme-ov-file#pinout)!  
+> PB0	SWDIO  
+> PA5	SWCLK
+
+<!-- TODO instructions for building https://github.com/blackmagic-debug/blackmagic -->
 
 
 ## Based on work of
