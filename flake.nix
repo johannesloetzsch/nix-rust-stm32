@@ -60,6 +60,7 @@
               openocd
               openocd-f1
               stm32flash
+              dfu-util
               probe-rs
             ];
           };

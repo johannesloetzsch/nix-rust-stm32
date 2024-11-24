@@ -7,7 +7,7 @@ use embedded_hal::digital::v2::OutputPin; // the `set_high` and `set_low` functi
 #[allow(unused_imports)]
 use panic_halt; // When a panic occurs, simply stop the microcontroller
 use stm32f1xx_hal::{delay::Delay, pac, prelude::*}; // STM32F1 specific functions
-use stm32f1xx_hal::gpio::{Output, PushPull, gpioc::PC13};
+use stm32f1xx_hal::gpio::{Output, PushPull, Pxx};
 
 
 pub const DELAY_MS: u16 = 100;
@@ -23,11 +23,11 @@ pub const DELAY_MS: u16 = 100;
 **/
 
 
-fn led_on(led: &mut PC13<Output<PushPull>>) {
+fn led_on(led: &mut Pxx<Output<PushPull>>) {
     let _ = led.set_high();
 }
 
-fn led_off(led: &mut PC13<Output<PushPull>>) {
+fn led_off(led: &mut Pxx<Output<PushPull>>) {
     let _ = led.set_low();
 }
 
@@ -53,7 +53,7 @@ fn main() -> ! {
     // This gives us an exclusive handle to the GPIOC peripheral. To get the
     // handle to a single pin, we need to configure the pin first. Pin C13
     // should be connected to the Bluepills onboard LED (on most boards, but don't rely on it…).
-    let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
+    let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh).downgrade();
 
     // Now we need a delay object. The delay is of course depending on the clock
     // frequency of the microcontroller, so we need to fix the frequency

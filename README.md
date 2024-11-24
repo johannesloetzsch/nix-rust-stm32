@@ -1,5 +1,14 @@
 # Blink a LED on a Blue pill (build on NixOS).
 
+STM32 can be programmed in multiple ways. This repo contains multiple demos:
+
+|          | B0  | B1  | pins         | adapter           | preparation        | tool       | demo       |
+| -------- | --- | --- | ------------ | ----------------- | ------------------ | ---------- | ---------- |
+| **UART** | 1   | 0   | RX, TX       | USB-UART          | none               | stm32flash | make flash |
+| **DFU**  | 0   | 0*  | USB d+,d-    | none              | install bootloader | dfu-util   | make dfu   |
+| **OCD**  | (0) | (1) | SWDIO, SWCLK | Black Magic Probe | none               | gdb        | make gdb   |
+
+
 ## Programm via UART1 (using external USB-UART)
 
 ### Pins
@@ -9,23 +18,21 @@
 > UART1 TxD: `PA10` (RxD)
 
 ### Boot pins (Jumper)
-To enter `System memory` boot mode:
+To enter `System memory` boot mode, reset (push button) with:
 > `BO = 1`  
 > `B1 = 0`
-
--> reset (push button)
 
 ### stm32flash
 ```sh
 nix develop
-make
+make flash
 ```
 
 > It turns out some Blue pill boards have gpioc.pc13 not connected to the onboard LED.
 > In that case you might want connect an external LED…
 
 
-## gdb
+## gdb (ocd)
 
 ### Black Magic Probe
 ```sh
@@ -68,6 +75,36 @@ lsusb | grep 'Black Magic Debug Probe'
 > PA5	SWCLK
 
 <!-- TODO instructions for building https://github.com/blackmagic-debug/blackmagic -->
+
+
+## dfu
+
+### [sboot\_stm32](https://github.com/dmitrystu/sboot_stm32)
+
+#### build and install bootloader
+```sh
+git git@github.com:dmitrystu/sboot_stm32.git; cd sboot_stm32
+make prerequisites
+make DFU_BOOTSTRAP_GPIO=GPIOB DFU_BOOTSTRAP_PIN=2 DFU_CIPHER=_DISABLE DFU_DETACH=_ENABLE stm32f103x8
+stm32flash -S 0x8000000 -v -w build/firmware.bin /dev/ttyUSB0
+```
+
+#### use dfu
+in memory.x use address from `grep __app_start build/firmware.map`:
+> FLASH : ORIGIN = 0x08001000, LENGTH = 60K
+
+> `BO = 0`  
+> `B1 = 0`
+
+reset to bootloader with:
+```sh
+lsusb | grep DFU
+make dfu
+```
+
+reset to boot app with:
+> `BO = 0`  
+> `B1 = 1`
 
 
 ## Based on work of
