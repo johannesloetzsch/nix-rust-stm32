@@ -76,6 +76,22 @@ lsusb | grep 'Black Magic Debug Probe'
 
 <!-- TODO instructions for building https://github.com/blackmagic-debug/blackmagic -->
 
+### Some reverse engineering foo
+These are instructions to dump the firmware from a Device to a binfile, and flash them back on the device. To flash a binfile to a device via gdb, you first need to create an ELF from that binfile.
+### Dumping existing firmware via SWD with GDB
+```sh
+gdb -iex 'target extended-remote /dev/ttyACM0' -iex 'monitor swdp_scan' -iex 'attach 1' -iex 'dump binary memory firmware.bin 0x08000000 0x08008000'
+```
+Where `firmware.bin` is the output file, 0x08000000, is the beginning of the firmware (should be the same on all stm32s) and 0x08008000 is the end of your firmware. When in doubt how big the firmware ist, just use 0x08100000 and see at which address it fails, then use that address. Now you have a bin file that you can analyze.
+
+#### Creating an elf file
+```sh
+arm-none-eabi-objcopy -I binary -O elf32-littlearm --change-section-address=.data=0x8000000 -B arm -S firmware.bin firmware.elf
+```
+#### Flashing an elf file via SWD with GDB
+```sh
+gdb -iex 'target extended-remote /dev/ttyACM0' -iex 'monitor swdp_scan' -iex 'attach 1' -iex 'file firmware.elf' -iex 'load'
+```
 
 ## dfu
 
