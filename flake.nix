@@ -65,9 +65,11 @@
             ];
           };
 
-          packages.blackknobs = naersk'.buildPackage {
+          packages.nix-rust-stm32 = naersk'.buildPackage {
             src = ./.;
           };
+
+          packages.default = packages.nix-rust-stm32;
 
           checks = packages;
         }
